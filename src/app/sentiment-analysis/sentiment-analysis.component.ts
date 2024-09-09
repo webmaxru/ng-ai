@@ -26,4 +26,20 @@ export class SentimentAnalysisComponent {
     // [{'label': 'POSITIVE', 'score': 0.999817686}]
     console.log(out);
   }
+
+  runWorker() {
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      const worker = new Worker(
+        new URL('./sentiment-analysis.worker', import.meta.url)
+      );
+      worker.onmessage = ({ data }) => {
+        console.log(data);
+      };
+      worker.postMessage(' I love transformers!');
+    } else {
+      // Web Workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
+  }
 }
