@@ -1,1 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.error-snackbar {
+  background-color: #f44336; /* Red background for error */
+  color: #fff; /* White text color */
+}
+
+.success-snackbar {
+  background-color: #4caf50; /* Green background for success */
+  color: #fff; /* White text color */
+}
+
+.info-snackbar {
+  background-color: #2196f3; /* Blue background for info */
+  color: #fff; /* White text color */
+}
+
+.full-width {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}

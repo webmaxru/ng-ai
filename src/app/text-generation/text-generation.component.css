@@ -1,0 +1,12 @@
+.card-content-container {
+    margin-top: 0.5rem;
+  }
+  
+  button {
+    margin-right: 0.5rem;
+  }
+  
+  a {
+    color: var(--mat-primary);
+  }
+  

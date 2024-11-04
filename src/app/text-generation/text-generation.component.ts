@@ -12,7 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SettingsComponent } from '../settings/settings.component';
-import { analyzeSentiment, setOptions } from './../transformers.service';
+import { generateText, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { showError, showSuccess, copyFromBuffer } from './../ui.utils';
@@ -20,7 +20,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'app-sentiment-analysis',
+  selector: 'app-text-generation',
   standalone: true,
   imports: [
     FormsModule,
@@ -36,20 +36,20 @@ import { MatSelectModule } from '@angular/material/select';
     MatCardModule,
     MatSelectModule,
   ],
-  templateUrl: './sentiment-analysis.component.html',
-  styleUrl: './sentiment-analysis.component.css',
+  templateUrl: './text-generation.component.html',
+  styleUrl: './text-generation.component.css',
 })
-export class SentimentAnalysisComponent implements AfterViewInit {
+export class TextGenerationComponent implements AfterViewInit {
   @ViewChild(SettingsComponent) settingsComponent!: SettingsComponent;
 
-  textSentimentValue: string = '';
+  textSeedValue: string = '';
 
   options: any;
   result: any;
 
   isPipelineRunning: boolean = false;
 
-  model: string = 'Xenova/bert-base-multilingual-uncased-sentiment';
+  model: string = 'Xenova/Phi-3-mini-4k-instruct';
 
   freeDimensionOverridesValue = {
     batch_size: 1,
@@ -75,7 +75,7 @@ export class SentimentAnalysisComponent implements AfterViewInit {
 
   async copyFromBuffer() {
     await copyFromBuffer(this.snackBar, (text: string) => {
-      this.textSentimentValue = text;
+      this.textSeedValue = text;
     });
   }
 
@@ -84,8 +84,8 @@ export class SentimentAnalysisComponent implements AfterViewInit {
     this.isPipelineRunning = true;
     this.result = {};
 
-    const result = await analyzeSentiment(
-      this.textSentimentValue,
+    const result = await generateText(
+      this.textSeedValue,
       this.model,
       this.options,
     );
@@ -94,7 +94,8 @@ export class SentimentAnalysisComponent implements AfterViewInit {
 
     if (!result.error) {
       showSuccess(this.snackBar, `Completed in ${result.duration} ms`);
-      this.result = result.result?.[0];
+      console.log(result.result);
+      this.result = result.result;
     } else {
       showError(this.snackBar, result.error);
     }
@@ -103,13 +104,13 @@ export class SentimentAnalysisComponent implements AfterViewInit {
   runWorker() {
     if (typeof Worker !== 'undefined') {
       const worker = new Worker(
-        new URL('./sentiment-analysis.worker', import.meta.url)
+        new URL('./text-generation.worker', import.meta.url)
       );
       worker.onmessage = ({ data }) => {
         if (!data.error) {
           showSuccess(this.snackBar, `Completed in ${data.duration} ms`);
 
-          this.result = data.result?.[0];
+          this.result = data.result;
 
         } else {
           showError(this.snackBar, data.error);
@@ -118,7 +119,7 @@ export class SentimentAnalysisComponent implements AfterViewInit {
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        text: this.textSentimentValue,
+        text: this.textSeedValue,
         model: this.model,
         options: this.options,
       });

@@ -1,0 +1,70 @@
+<mat-card class="settings-card">
+  <mat-card-header>
+    <mat-card-title>Settings</mat-card-title>
+    <mat-card-subtitle>Manage your application settings</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="settings-container">
+      <section>
+        <label for="api">API:</label>
+        <mat-button-toggle-group
+          [(ngModel)]="settings.api"
+          (ngModelChange)="updateSettings('api', $event)"
+          name="api"
+          aria-label="api"
+        >
+          <mat-button-toggle value="auto">Auto</mat-button-toggle>
+          <mat-button-toggle value="wasm">WASM</mat-button-toggle>
+          <mat-button-toggle value="webgpu" [disabled]="!isWebGPUEnabled"
+            >WebGPU</mat-button-toggle
+          >
+          <mat-button-toggle value="webnn" [disabled]="!isWebNNEnabled"
+            >WebNN</mat-button-toggle
+          >
+        </mat-button-toggle-group>
+      </section>
+      <section>
+        <label for="webnnDevice">WebNN device:</label>
+        <mat-button-toggle-group
+          [(ngModel)]="settings.webnnDevice"
+          (ngModelChange)="updateSettings('webnnDevice', $event)"
+          name="webnnDevice"
+          aria-label="webnnDevice"
+          [disabled]="settings.api !== 'webnn'"
+        >
+          <mat-button-toggle value="">Default</mat-button-toggle>
+          <mat-button-toggle value="cpu">CPU</mat-button-toggle>
+          <mat-button-toggle value="gpu">GPU</mat-button-toggle>
+          <mat-button-toggle value="npu" [disabled]="!isNPUEnabled"
+            >NPU</mat-button-toggle
+          >
+        </mat-button-toggle-group>
+      </section>
+      <section>
+        <label for="quantization">Quantization:</label>
+        <mat-button-toggle-group
+          [(ngModel)]="settings.quantization"
+          (ngModelChange)="updateSettings('quantization', $event)"
+          name="quantization"
+          aria-label="quantization"
+        >
+          <mat-button-toggle value="q4">q4</mat-button-toggle>
+          <mat-button-toggle value="fp16" [disabled]="!isFp16Enabled"
+            >fp16</mat-button-toggle
+          >
+          <mat-button-toggle value="fp32">fp32</mat-button-toggle>
+        </mat-button-toggle-group>
+      </section>
+      <section>
+        <label for="isFreeDimensionOverrides">&nbsp;</label>
+        <mat-checkbox
+          name="isFreeDimensionOverrides"
+          [(ngModel)]="settings.isFreeDimensionOverrides"
+          (ngModelChange)="updateSettings('isFreeDimensionOverrides', $event)"
+        >
+          Free Dimension Overrides
+        </mat-checkbox>
+      </section>
+    </div>
+  </mat-card-content>
+</mat-card>

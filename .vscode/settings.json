@@ -1,0 +1,10 @@
+{
+    "codeQL.githubDatabase.download": "never",
+    "cSpell.words": [
+        "dtype",
+        "onnx",
+        "webgpu",
+        "webnn",
+        "Xenova"
+    ]
+}

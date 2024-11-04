@@ -1,0 +1,20 @@
+.settings-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.settings-container section {
+  flex: 1 1; /* Adjust the minimum width as needed */
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.settings-container label {
+  display: block;
+  margin-bottom: 0.5rem; /* Optional: Add some space after the label */
+}
+
+.settings-card {
+    margin-bottom: 1rem; /* Adjust the value as needed */
+  }

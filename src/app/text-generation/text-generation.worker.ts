@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { analyzeSentiment } from './../transformers.service';
+import { generateText } from './../transformers.service';
 
 addEventListener('message', async ({ data }) => {
   let result = await runPipeline(data.text, data.model, data.options);
@@ -9,7 +9,7 @@ addEventListener('message', async ({ data }) => {
 });
 
 async function runPipeline(text: string, model:string, options: any) {
-  const result = await analyzeSentiment(
+  const result = await generateText(
     text,
     model,
     options
