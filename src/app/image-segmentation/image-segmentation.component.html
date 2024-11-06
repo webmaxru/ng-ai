@@ -1,0 +1,145 @@
+<mat-progress-bar
+  *ngIf="isPipelineRunning"
+  mode="indeterminate"
+></mat-progress-bar>
+
+<app-settings></app-settings>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Image segmentation</mat-card-title>
+    <mat-card-subtitle
+      >Divides an image into segments where each pixel is mapped to an object.
+      This task has multiple variants such as instance segmentation, panoptic
+      segmentation and semantic segmentation.
+      <a
+        href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.ImageSegmentationPipeline"
+        target="_blank"
+        >Docs</a
+      >
+      |
+      <a
+        href="https://huggingface.co/models?pipeline_tag=image-segmentation&library=transformers.js"
+        target="_blank"
+        >Models</a
+      >
+      |
+      <a
+        href="https://medium.com/@paul.pietzko/custom-file-uploader-angular-18-ca566131f128"
+        target="_blank"
+        >Image upload in Angular</a
+      >
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="card-content-container">
+      <mat-form-field class="full-width">
+        <mat-label>Model</mat-label>
+        <mat-select [(ngModel)]="model">
+          <mat-option
+            value="Xonnx-community/mobilenetv4_conv_small.e2400_r224_in1k"
+            selected
+            >Classify: mobilenetv4_conv_small.e2400_r224_in1k</mat-option
+          >
+          <mat-option value="Xenova/detr-resnet-50-panoptic"
+            >Segment: detr-resnet-50-panoptic</mat-option
+          >
+
+          <mat-option value="Xenova/detr-resnet-50"
+            >Segment: Xenova/detr-resnet-50</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
+      <div
+        class="file-upload-wrapper"
+        [class.success]="uploadSuccess"
+        [class.error]="uploadError"
+        (drop)="onFileDrop($event)"
+        (dragover)="onDragOver($event)"
+      >
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+          hidden
+          #fileInput
+        />
+        <div class="file-dropper" (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          <p>Upload</p>
+          <div *ngIf="imageName()">
+            <div *ngIf="selectedFile || imagePreview">
+              <img
+                [src]="imagePreview()"
+                alt="Image Preview"
+                class="image-preview"
+              />
+              <p>
+                <span class="image-name">{{ imageName() }}</span> ({{
+                  fileSize()
+                }}
+                KB)
+              </p>
+              <mat-icon class="delete-icon" (click)="removeImage()"
+                >delete</mat-icon
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('/images/airport.jpg'); imageName.set('airport.jpg')
+        "
+      >
+        Sample 1
+      </button>
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('/images/cats.jpg'); imageName.set('cats.jpg')
+        "
+      >
+        Sample 2
+      </button>
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('/images/staircase.jpg');
+          imageName.set('staircase.jpg')
+        "
+      >
+        Sample 3
+      </button>
+    </div>
+
+    <div
+      class="card-content-container"
+      *ngIf="!isPipelineRunning && result?.label"
+    >
+      <h3>
+        Label: {{ result?.label }}, Score:
+        {{ result?.score | number : "1.2-2" }}
+      </h3>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-stroked-button
+      (click)="run('image-segmentation')"
+      [disabled]="isPipelineRunning || !imagePreview() || !model"
+    >
+      Segment
+    </button>
+    <button
+      mat-stroked-button
+      (click)="run('image-classification')"
+      [disabled]="isPipelineRunning || !imagePreview() || !model"
+    >
+      Classify
+    </button>
+  </mat-card-actions>
+</mat-card>

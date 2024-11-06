@@ -8,7 +8,7 @@ export function showSuccess(
 ) {
   snackBar.open(message, action, {
     duration: duration,
-    panelClass: ['success-snackbar']
+    panelClass: ['success-snackbar'],
   });
 }
 
@@ -20,16 +20,28 @@ export function showError(
 ) {
   snackBar.open(error.toString() || 'Unknown error', action, {
     duration: duration,
-    panelClass: ['error-snackbar']
+    panelClass: ['error-snackbar'],
   });
 }
 
-export async function copyFromBuffer(snackBar: MatSnackBar, setText: (text: string) => void) {
-    try {
-      const text = await navigator.clipboard.readText();
-      setText(text);
-    } catch (err) {
-      showError(snackBar, `Failed to read clipboard contents: ${err}`);
-    }
+export function processCompletion(snackBar: MatSnackBar, completion: any) {
+  if (!completion.error) {
+    showSuccess(snackBar, `Completed in ${completion.duration} ms`);
+    return completion.result?.[0];
+  } else {
+    showError(snackBar, completion.error);
+    return null;
   }
-  
+}
+
+export async function copyFromBuffer(
+  snackBar: MatSnackBar,
+  setText: (text: string) => void
+) {
+  try {
+    const text = await navigator.clipboard.readText();
+    setText(text);
+  } catch (err) {
+    showError(snackBar, `Failed to read clipboard contents: ${err}`);
+  }
+}

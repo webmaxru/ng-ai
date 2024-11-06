@@ -8,7 +8,20 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>Sentiment analysis</mat-card-title>
-    <mat-card-subtitle>Assigning a label to a given text. <a href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.TextClassificationPipeline" target="_blank">Docs</a> | <a href="https://huggingface.co/models?pipeline_tag=text-classification&library=transformers.js" target="_blank">Models</a>  </mat-card-subtitle>
+    <mat-card-subtitle
+      >Assigning a label to a given text.
+      <a
+        href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.TextClassificationPipeline"
+        target="_blank"
+        >Docs</a
+      >
+      |
+      <a
+        href="https://huggingface.co/models?pipeline_tag=text-classification&library=transformers.js"
+        target="_blank"
+        >Models</a
+      >
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div class="card-content-container">
@@ -27,13 +40,13 @@
 
       <mat-form-field class="full-width">
         <mat-label>Text to analyze</mat-label>
-        <textarea matInput [(ngModel)]="textSentimentValue"></textarea>
+        <textarea matInput [(ngModel)]="textSeedValue"></textarea>
       </mat-form-field>
       <button mat-button (click)="copyFromBuffer()">Copy from Buffer</button>
       <button
         mat-button
         (click)="
-          textSentimentValue =
+          textSeedValue =
             'Artificial intelligence has transformed workflows by enhancing efficiency, creativity, and decision-making, making complex tasks easier and more accessible.'
         "
       >
@@ -42,7 +55,7 @@
       <button
         mat-button
         (click)="
-          textSentimentValue =
+          textSeedValue =
             'While artificial intelligence offers impressive capabilities, it sometimes lacks transparency and can introduce biases, leading to concerns about reliability and ethical implications in decision-making.'
         "
       >
@@ -51,7 +64,7 @@
       <button
         mat-button
         (click)="
-          textSentimentValue =
+          textSeedValue =
             'Artificial intelligence always feels intrusive, unpredictable, and prone to errors, raising serious concerns about privacy, dependency, and the loss of genuine human insight in decision-making processes.'
         "
       >
@@ -59,20 +72,19 @@
       </button>
     </div>
 
-    <div class="card-content-container" *ngIf="!isPipelineRunning && result?.label">
-      <h3>Label: {{ result?.label }}, Score: {{ result?.score | number:'1.2-2' }}</h3>
+    <div
+      class="card-content-container"
+      *ngIf="!isPipelineRunning && result?.label"
+    >
+      <h3>
+        Label: {{ result?.label }}, Score:
+        {{ result?.score | number : "1.2-2" }}
+      </h3>
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning">
+    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning || !textSeedValue || !model">
       Run
-    </button>
-    <button
-      mat-stroked-button
-      (click)="runWorker()"
-      [disabled]="isPipelineRunning"
-    >
-      Run in worker
     </button>
   </mat-card-actions>
 </mat-card>

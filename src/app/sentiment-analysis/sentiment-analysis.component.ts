@@ -1,8 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
@@ -12,12 +8,18 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SettingsComponent } from '../settings/settings.component';
-import { analyzeSentiment, setOptions } from './../transformers.service';
+import { runPipeline, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { showError, showSuccess, copyFromBuffer } from './../ui.utils';
+import {
+  showError,
+  showSuccess,
+  processCompletion,
+  copyFromBuffer,
+} from './../ui.utils';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-sentiment-analysis',
@@ -35,6 +37,7 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     MatCardModule,
     MatSelectModule,
+    MatCheckboxModule,
   ],
   templateUrl: './sentiment-analysis.component.html',
   styleUrl: './sentiment-analysis.component.css',
@@ -42,7 +45,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class SentimentAnalysisComponent implements AfterViewInit {
   @ViewChild(SettingsComponent) settingsComponent!: SettingsComponent;
 
-  textSentimentValue: string = '';
+  textSeedValue: string = '';
 
   options: any;
   result: any;
@@ -57,6 +60,8 @@ export class SentimentAnalysisComponent implements AfterViewInit {
     height: 224,
     width: 224,
   };
+
+  pipelineParams = {};
 
   constructor(private snackBar: MatSnackBar) {}
 
@@ -75,61 +80,40 @@ export class SentimentAnalysisComponent implements AfterViewInit {
 
   async copyFromBuffer() {
     await copyFromBuffer(this.snackBar, (text: string) => {
-      this.textSentimentValue = text;
+      this.textSeedValue = text;
     });
   }
 
   async run() {
-
     this.isPipelineRunning = true;
     this.result = {};
 
-    const result = await analyzeSentiment(
-      this.textSentimentValue,
-      this.model,
-      this.options,
-    );
+    if (!this.settingsComponent.isRunInWorker) {
+      const completion = await runPipeline(
+        'sentiment-analysis',
+        this.textSeedValue,
+        this.model,
+        this.options,
+        this.pipelineParams
+      );
 
-    this.isPipelineRunning = false;
-
-    if (!result.error) {
-      showSuccess(this.snackBar, `Completed in ${result.duration} ms`);
-      this.result = result.result?.[0];
+      this.result = processCompletion(this.snackBar, completion);
+      this.isPipelineRunning = false;
     } else {
-      showError(this.snackBar, result.error);
-    }
-  }
-
-  runWorker() {
-    if (typeof Worker !== 'undefined') {
       const worker = new Worker(
-        new URL('./sentiment-analysis.worker', import.meta.url)
+        new URL('./../transformers.worker', import.meta.url)
       );
       worker.onmessage = ({ data }) => {
-        if (!data.error) {
-          showSuccess(this.snackBar, `Completed in ${data.duration} ms`);
-
-          this.result = data.result?.[0];
-
-        } else {
-          showError(this.snackBar, data.error);
-        }
-
+        this.result = processCompletion(this.snackBar, data);
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        text: this.textSentimentValue,
+        pipeline: 'sentiment-analysis',
+        input: this.textSeedValue,
         model: this.model,
         options: this.options,
+        pipelineParams: this.pipelineParams,
       });
-      this.isPipelineRunning = true;
-      this.result = {};
-    } else {
-      showError(
-        this.snackBar,
-        'Web Workers are not supported in this environment. Running in the main thread.'
-      );
-      this.run();
     }
   }
 }

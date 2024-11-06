@@ -1,8 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
@@ -12,12 +8,18 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SettingsComponent } from '../settings/settings.component';
-import { generateText, setOptions } from './../transformers.service';
+import { runPipeline, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { showError, showSuccess, copyFromBuffer } from './../ui.utils';
+import {
+  showError,
+  showSuccess,
+  processCompletion,
+  copyFromBuffer,
+} from './../ui.utils';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-text-generation',
@@ -35,6 +37,7 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     MatCardModule,
     MatSelectModule,
+    MatCheckboxModule,
   ],
   templateUrl: './text-generation.component.html',
   styleUrl: './text-generation.component.css',
@@ -58,6 +61,18 @@ export class TextGenerationComponent implements AfterViewInit {
     width: 224,
   };
 
+  pipelineParams = {
+    max_new_tokens: 30,
+    //temperature: 2,
+    //max_new_tokens: 10,
+    //repetition_penalty: 1.5,
+    //no_repeat_ngram_size: 2,
+    //num_beams: 2,
+    //num_return_sequences: 2,
+  };
+
+  // 'text-generation': options.use_external_data_format = true;
+
   constructor(private snackBar: MatSnackBar) {}
 
   ngAfterViewInit() {
@@ -80,57 +95,35 @@ export class TextGenerationComponent implements AfterViewInit {
   }
 
   async run() {
-
     this.isPipelineRunning = true;
     this.result = {};
 
-    const result = await generateText(
-      this.textSeedValue,
-      this.model,
-      this.options,
-    );
+    if (!this.settingsComponent.isRunInWorker) {
+      const completion = await runPipeline(
+        'text-generation',
+        this.textSeedValue,
+        this.model,
+        this.options,
+        this.pipelineParams
+      );
 
-    this.isPipelineRunning = false;
-
-    if (!result.error) {
-      showSuccess(this.snackBar, `Completed in ${result.duration} ms`);
-      console.log(result.result);
-      this.result = result.result;
+      this.result = processCompletion(this.snackBar, completion);
+      this.isPipelineRunning = false;
     } else {
-      showError(this.snackBar, result.error);
-    }
-  }
-
-  runWorker() {
-    if (typeof Worker !== 'undefined') {
       const worker = new Worker(
-        new URL('./text-generation.worker', import.meta.url)
+        new URL('./../transformers.worker', import.meta.url)
       );
       worker.onmessage = ({ data }) => {
-        if (!data.error) {
-          showSuccess(this.snackBar, `Completed in ${data.duration} ms`);
-
-          this.result = data.result;
-
-        } else {
-          showError(this.snackBar, data.error);
-        }
-
+        this.result = processCompletion(this.snackBar, data);
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        text: this.textSeedValue,
+        pipeline: 'text-generation',
+        input: this.textSeedValue,
         model: this.model,
         options: this.options,
+        pipelineParams: this.pipelineParams,
       });
-      this.isPipelineRunning = true;
-      this.result = {};
-    } else {
-      showError(
-        this.snackBar,
-        'Web Workers are not supported in this environment. Running in the main thread.'
-      );
-      this.run();
     }
   }
 }

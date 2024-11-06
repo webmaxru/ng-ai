@@ -26,6 +26,16 @@
             value="Xenova/llama2.c-stories15M"
             >Xenova/llama2.c-stories15M</mat-option
           >
+          <mat-option
+            value="onnx-community/MobileLLM-125M"
+            >onnx-community/MobileLLM-125M - set fp32</mat-option
+          >
+          <mat-option
+            value="onnx-community/AMD-OLMo-1B-SFT-DPO"
+            >onnx-community/AMD-OLMo-1B-SFT-DPO - set q4</mat-option
+          >
+
+          
         </mat-select>
       </mat-form-field>
 
@@ -38,7 +48,7 @@
         mat-button
         (click)="
           textSeedValue =
-            'Hello my friend'
+            'Q: What is the capital of France?\nA: Paris\nQ: What is the capital of England?\nA:'
         "
       >
         Sample 1
@@ -68,15 +78,9 @@
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning">
+    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning || !textSeedValue || !model">
       Run
     </button>
-    <button
-      mat-stroked-button
-      (click)="runWorker()"
-      [disabled]="isPipelineRunning"
-    >
-      Run in worker
-    </button>
+
   </mat-card-actions>
 </mat-card>

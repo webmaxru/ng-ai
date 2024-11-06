@@ -1,7 +1,9 @@
 {
     "codeQL.githubDatabase.download": "never",
     "cSpell.words": [
+        "detr",
         "dtype",
+        "huggingface",
         "onnx",
         "webgpu",
         "webnn",

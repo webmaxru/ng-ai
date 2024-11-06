@@ -65,6 +65,17 @@
           Free Dimension Overrides
         </mat-checkbox>
       </section>
+      <section>
+        <label for="isRunInWorker">&nbsp;</label>
+        <mat-checkbox
+          name="isRunInWorker"
+          [(ngModel)]="settings.isRunInWorker"
+          (ngModelChange)="updateSettings('isRunInWorker', $event)"
+          [disabled]="!isWorkerEnabled"
+        >
+          Run in worker
+        </mat-checkbox>
+      </section>
     </div>
   </mat-card-content>
 </mat-card>

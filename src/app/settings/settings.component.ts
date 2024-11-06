@@ -49,6 +49,8 @@ export class SettingsComponent {
   isWebGPUEnabled: boolean = false;
   isNPUEnabled: boolean = false;
   isFp16Enabled: boolean = false;
+  isWorkerEnabled: boolean = false;
+  isRunInWorker: boolean = false;
 
   ngOnInit(): void {
     this.settings = {
@@ -69,6 +71,11 @@ export class SettingsComponent {
     });
     this.isFp16().then((res) => {
       this.isFp16Enabled = res;
+    });
+    this.isWorker().then((res) => {
+      this.isWorkerEnabled = res;
+
+      if (this.isWorkerEnabled) this.isRunInWorker = true;
     });
   }
 
@@ -110,14 +117,21 @@ export class SettingsComponent {
   }
 
   async isFp16() {
-
     let navigatorObj = <any>navigator;
 
     try {
-        const adapter = await navigatorObj.gpu.requestAdapter();
-        return adapter.features.has('shader-f16');
+      const adapter = await navigatorObj.gpu.requestAdapter();
+      return adapter.features.has('shader-f16');
     } catch (e) {
-        return false;
+      return false;
     }
-}
+  }
+
+  async isWorker() {
+    if (typeof Worker !== 'undefined') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
