@@ -6,6 +6,16 @@
   width: 200px;
 }
 
+.mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.mat-drawer-inner-container p {
+  margin-top: auto;
+}
+
 .sidenav .mat-toolbar {
   background: inherit;
 }
