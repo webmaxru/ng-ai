@@ -1,7 +1,7 @@
 const { injectManifest } = require("workbox-build");
 
 let workboxConfig = {
-  globDirectory: "dist/prog-web-news",
+  globDirectory: "dist/ng-ai/browser",
   globPatterns: [
     "index.html",
     "*.css",
