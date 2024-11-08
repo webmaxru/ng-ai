@@ -1,0 +1,11 @@
+a {
+  color: var(--mat-primary);
+}
+
+.card-content-container {
+  margin-top: 0.5rem;
+}
+
+.logo {
+  text-align: center;
+}

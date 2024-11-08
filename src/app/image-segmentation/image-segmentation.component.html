@@ -9,7 +9,7 @@
   <mat-card-header>
     <mat-card-title>Image classification</mat-card-title>
     <mat-card-subtitle
-      >Assigning a label or class to an entire image.	
+      >Assigning a label or class to an entire image.
       <a
         href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.ImageClassificationPipeline"
         target="_blank"
@@ -66,7 +66,7 @@
       (click)="run('image-segmentation')"
       [disabled]="isPipelineRunning || !imagePreview() || !model"
     >
-      Segment
+      Segment <small>WIP</small>
     </button>
   </mat-card-actions>
   <mat-card-content>
@@ -74,7 +74,7 @@
       <button
         mat-button
         (click)="
-          imagePreview.set('samples/airport.jpg'); imageName.set('airport.jpg')
+          imagePreview.set('samples/plane.jpg'); imageName.set('plane.jpg')
         "
       >
         Sample 1
@@ -96,7 +96,14 @@
       >
         Sample 3
       </button>
-
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('samples/desk.jpg'); imageName.set('desk.jpg')
+        "
+      >
+        Sample 4
+      </button>
       <div
         class="file-upload-wrapper"
         [class.success]="uploadSuccess"
@@ -149,7 +156,7 @@
       (click)="run('image-segmentation')"
       [disabled]="isPipelineRunning || !imagePreview() || !model"
     >
-      Segment
+      Segment <small>WIP</small>
     </button>
   </mat-card-actions>
 </mat-card>
