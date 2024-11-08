@@ -11,15 +11,11 @@ import { SettingsComponent } from '../settings/settings.component';
 import { runPipeline, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  showError,
-  showSuccess,
-  processCompletion,
-  copyFromBuffer,
-} from './../ui.utils';
+import { processCompletion, copyFromBuffer } from './../ui.utils';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Models } from './../types';
 
 @Component({
   selector: 'app-text-generation',
@@ -52,7 +48,27 @@ export class TextGenerationComponent implements AfterViewInit {
 
   isPipelineRunning: boolean = false;
 
-  model: string = 'Xenova/Phi-3-mini-4k-instruct';
+  models: Models[] = [
+    {
+      value: 'Xenova/Phi-3-mini-4k-instruct',
+      viewValue: 'Phi-3-mini-4k-instruct',
+    },
+    {
+      value: 'Xenova/gpt2',
+      viewValue: 'gpt2',
+    },
+    { value: 'Xenova/llama2.c-stories15M', viewValue: 'llama2.c-stories15M' },
+    {
+      value: 'onnx-community/MobileLLM-125M',
+      viewValue: 'MobileLLM-125M - set fp32',
+    },
+    {
+      value: 'onnx-community/AMD-OLMo-1B-SFT-DPO',
+      viewValue: 'AMD-OLMo-1B-SFT-DPO - set q4',
+    },
+  ];
+
+  model: string = this.models[0].value;
 
   freeDimensionOverridesValue = {
     batch_size: 1,
@@ -98,7 +114,7 @@ export class TextGenerationComponent implements AfterViewInit {
     this.isPipelineRunning = true;
     this.result = {};
 
-    if (!this.settingsComponent.isRunInWorker) {
+    if (!this.settingsComponent.settings.isRunInWorker) {
       const completion = await runPipeline(
         'text-generation',
         this.textSeedValue,
@@ -118,7 +134,7 @@ export class TextGenerationComponent implements AfterViewInit {
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        pipeline: 'text-generation',
+        pipelineName: 'text-generation',
         input: this.textSeedValue,
         model: this.model,
         options: this.options,

@@ -8,34 +8,29 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>Text generation</mat-card-title>
-    <mat-card-subtitle>Assigning a label to a given text. <a href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.TextClassificationPipeline" target="_blank">Docs</a> | <a href="https://huggingface.co/models?pipeline_tag=text-classification&library=transformers.js" target="_blank">Models</a>  </mat-card-subtitle>
+    <mat-card-subtitle
+      >Assigning a label to a given text.
+      <a
+        href="https://huggingface.co/docs/transformers.js/api/pipelines#module_pipelines.TextClassificationPipeline"
+        target="_blank"
+        >Docs</a
+      >
+      |
+      <a
+        href="https://huggingface.co/models?pipeline_tag=text-classification&library=transformers.js"
+        target="_blank"
+        >Models</a
+      >
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div class="card-content-container">
       <mat-form-field class="full-width">
         <mat-label>Model</mat-label>
         <mat-select [(ngModel)]="model">
-          <mat-option value="Xenova/Phi-3-mini-4k-instruct"
-            >Xenova/Phi-3-mini-4k-instruct</mat-option
-          >
-          <mat-option
-            value="Xenova/gpt2"
-            >Xenova/gpt2</mat-option
-          >
-          <mat-option
-            value="Xenova/llama2.c-stories15M"
-            >Xenova/llama2.c-stories15M</mat-option
-          >
-          <mat-option
-            value="onnx-community/MobileLLM-125M"
-            >onnx-community/MobileLLM-125M - set fp32</mat-option
-          >
-          <mat-option
-            value="onnx-community/AMD-OLMo-1B-SFT-DPO"
-            >onnx-community/AMD-OLMo-1B-SFT-DPO - set q4</mat-option
-          >
-
-          
+          @for (model of models; track model) {
+          <mat-option [value]="model.value">{{ model.viewValue }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
@@ -53,34 +48,31 @@
       >
         Sample 1
       </button>
-      <button
-        mat-button
-        (click)="
-          textSeedValue =
-            'Write a poem about love'
-        "
-      >
+      <button mat-button (click)="textSeedValue = 'Write a poem about love'">
         Sample 2
       </button>
-      <button
-        mat-button
-        (click)="
-          textSeedValue =
-            'Have a nice day'
-        "
-      >
+      <button mat-button (click)="textSeedValue = 'Have a nice day'">
         Sample 3
       </button>
     </div>
 
-    <div class="card-content-container" *ngIf="!isPipelineRunning && result?.[0]?.generated_text">
-      <h3>{{ result?.[0].generated_text }}</h3>
+    <div class="card-content-container" *ngIf="!isPipelineRunning && result">
+      <ul>
+        @for (resultItem of result; track resultItem) {
+        <li>
+          <strong>{{ resultItem.generated_text }}</strong>
+        </li>
+        }
+      </ul>
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning || !textSeedValue || !model">
+    <button
+      mat-stroked-button
+      (click)="run()"
+      [disabled]="isPipelineRunning || !textSeedValue || !model"
+    >
       Run
     </button>
-
   </mat-card-actions>
 </mat-card>

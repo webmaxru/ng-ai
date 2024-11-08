@@ -14,16 +14,14 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SettingsComponent } from '../settings/settings.component';
-import {
-  runPipeline,
-  setOptions,
-} from './../transformers.service';
+import { runPipeline, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { showError, showSuccess, processCompletion } from './../ui.utils';
+import { processCompletion } from './../ui.utils';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Models } from './../types';
 
 @Component({
   selector: 'app-image-segmentation',
@@ -64,7 +62,25 @@ export class ImageSegmentationComponent implements AfterViewInit {
 
   // https://github.com/microsoft/webnn-developer-preview/blob/main/demos/image-classification/index.js
 
-  model: string = '';
+  models: Models[] = [
+    {
+      value: 'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k',
+      viewValue: 'Classify: mobilenetv4_conv_small.e2400_r224_in1k',
+    },
+    {
+      value: 'Xenova/fastvit_t12.apple_in1k',
+      viewValue: 'Classify: fastvit_t12.apple_in1k',
+    },
+    { value: 'Xenova/resnet-50', viewValue: 'Classify: resnet-50' },
+    {
+      value: 'Xenova/detr-resnet-50-panoptic',
+      viewValue: 'Segment: detr-resnet-50-panoptic',
+    },
+    { value: 'Xenova/detr-resnet-50', viewValue: 'Segment: detr-resnet-50' },
+  ];
+
+  model: string = this.models[0].value;
+
   freeDimensionOverridesValue = {
     batch_size: 1,
     num_channels: 1,
@@ -73,10 +89,10 @@ export class ImageSegmentationComponent implements AfterViewInit {
   };
 
   segmentationPipelineParams = {
-    threshold: 0.5,
+    //threshold: 0.5,
   };
   classificationPipelineParams = {
-    top_k: 0.5,
+    //top_k: 0.5,
   };
 
   constructor(private snackBar: MatSnackBar) {}
@@ -94,17 +110,19 @@ export class ImageSegmentationComponent implements AfterViewInit {
     });
   }
 
-  async run(pipelineName:any) {
+  async run(pipelineName: any) {
     this.isPipelineRunning = true;
     this.result = {};
 
-    if (!this.settingsComponent.isRunInWorker) {
+    if (!this.settingsComponent.settings.isRunInWorker) {
       const completion = await runPipeline(
         pipelineName,
         this.imagePreview(),
         this.model,
         this.options,
-        pipelineName == 'image-segmentation' ? this.segmentationPipelineParams : this.classificationPipelineParams,
+        pipelineName == 'image-segmentation'
+          ? this.segmentationPipelineParams
+          : this.classificationPipelineParams
       );
 
       this.result = processCompletion(this.snackBar, completion);
@@ -118,11 +136,14 @@ export class ImageSegmentationComponent implements AfterViewInit {
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        pipeline: pipelineName,
+        pipelineName: pipelineName,
         input: this.imagePreview(),
         model: this.model,
         options: this.options,
-        pipelineParams: pipelineName == 'image-segmentation' ? this.segmentationPipelineParams : this.classificationPipelineParams,
+        pipelineParams:
+          pipelineName == 'image-segmentation'
+            ? this.segmentationPipelineParams
+            : this.classificationPipelineParams,
       });
     }
   }

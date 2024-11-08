@@ -39,7 +39,6 @@ export function setOptions(
     dtype: settingsComponent.settings['quantization'] as DataType,
     device: provider,
     session_options: {} as SessionOptions,
-    logLevel: 'verbose',
   };
 
   if (settingsComponent.settings['isFreeDimensionOverrides']) {
@@ -63,7 +62,6 @@ export async function runPipeline(
 
   try {
     let pipe = await pipeline(pipelineName, model, options);
-
     let result = await pipe(input, pipelineParams);
     const duration = Date.now() - startTime;
     return { error: null, result: result, duration: duration };

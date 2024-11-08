@@ -36,20 +36,68 @@
       <mat-form-field class="full-width">
         <mat-label>Model</mat-label>
         <mat-select [(ngModel)]="model">
-          <mat-option
-            value="Xonnx-community/mobilenetv4_conv_small.e2400_r224_in1k"
-            selected
-            >Classify: mobilenetv4_conv_small.e2400_r224_in1k</mat-option
-          >
-          <mat-option value="Xenova/detr-resnet-50-panoptic"
-            >Segment: detr-resnet-50-panoptic</mat-option
-          >
-
-          <mat-option value="Xenova/detr-resnet-50"
-            >Segment: Xenova/detr-resnet-50</mat-option
-          >
+          @for (model of models; track model) {
+          <mat-option [value]="model.value">{{ model.viewValue }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
+    </div>
+    <div class="card-content-container" *ngIf="!isPipelineRunning && result">
+      <ul>
+        @for (resultItem of result; track resultItem) {
+        <li>
+          Label:
+          <strong>{{ resultItem.label }}</strong
+          >, Score:
+          <strong>{{ resultItem.score | number : "1.2-2" }}</strong>
+        </li>
+        }
+      </ul>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-stroked-button
+      (click)="run('image-classification')"
+      [disabled]="isPipelineRunning || !imagePreview() || !model"
+    >
+      Classify
+    </button>
+    <button
+      mat-stroked-button
+      (click)="run('image-segmentation')"
+      [disabled]="isPipelineRunning || !imagePreview() || !model"
+    >
+      Segment
+    </button>
+  </mat-card-actions>
+  <mat-card-content>
+    <div class="card-content-container">
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('samples/airport.jpg'); imageName.set('airport.jpg')
+        "
+      >
+        Sample 1
+      </button>
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('samples/cats.jpg'); imageName.set('cats.jpg')
+        "
+      >
+        Sample 2
+      </button>
+      <button
+        mat-button
+        (click)="
+          imagePreview.set('samples/staircase.jpg');
+          imageName.set('staircase.jpg')
+        "
+      >
+        Sample 3
+      </button>
 
       <div
         class="file-upload-wrapper"
@@ -75,7 +123,7 @@
                 alt="Image Preview"
                 class="image-preview"
               />
-              <p>
+              <p *ngIf="fileSize()">
                 <span class="image-name">{{ imageName() }}</span> ({{
                   fileSize()
                 }}
@@ -88,58 +136,22 @@
           </div>
         </div>
       </div>
-
-      <button
-        mat-button
-        (click)="
-          imagePreview.set('/images/airport.jpg'); imageName.set('airport.jpg')
-        "
-      >
-        Sample 1
-      </button>
-      <button
-        mat-button
-        (click)="
-          imagePreview.set('/images/cats.jpg'); imageName.set('cats.jpg')
-        "
-      >
-        Sample 2
-      </button>
-      <button
-        mat-button
-        (click)="
-          imagePreview.set('/images/staircase.jpg');
-          imageName.set('staircase.jpg')
-        "
-      >
-        Sample 3
-      </button>
-    </div>
-
-    <div
-      class="card-content-container"
-      *ngIf="!isPipelineRunning && result?.label"
-    >
-      <h3>
-        Label: {{ result?.label }}, Score:
-        {{ result?.score | number : "1.2-2" }}
-      </h3>
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button
-      mat-stroked-button
-      (click)="run('image-segmentation')"
-      [disabled]="isPipelineRunning || !imagePreview() || !model"
-    >
-      Segment
-    </button>
     <button
       mat-stroked-button
       (click)="run('image-classification')"
       [disabled]="isPipelineRunning || !imagePreview() || !model"
     >
       Classify
+    </button>
+    <button
+      mat-stroked-button
+      (click)="run('image-segmentation')"
+      [disabled]="isPipelineRunning || !imagePreview() || !model"
+    >
+      Segment
     </button>
   </mat-card-actions>
 </mat-card>

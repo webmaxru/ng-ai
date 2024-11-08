@@ -11,15 +11,11 @@ import { SettingsComponent } from '../settings/settings.component';
 import { runPipeline, setOptions } from './../transformers.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  showError,
-  showSuccess,
-  processCompletion,
-  copyFromBuffer,
-} from './../ui.utils';
+import { processCompletion, copyFromBuffer } from './../ui.utils';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Models } from './../types';
 
 @Component({
   selector: 'app-sentiment-analysis',
@@ -52,7 +48,18 @@ export class SentimentAnalysisComponent implements AfterViewInit {
 
   isPipelineRunning: boolean = false;
 
-  model: string = 'Xenova/bert-base-multilingual-uncased-sentiment';
+  models: Models[] = [
+    {
+      value: 'Xenova/bert-base-multilingual-uncased-sentiment',
+      viewValue: 'bert-base-multilingual-uncased-sentiment',
+    },
+    {
+      value: 'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
+      viewValue: 'distilbert-base-uncased-finetuned-sst-2-english',
+    },
+  ];
+
+  model: string = this.models[0].value;
 
   freeDimensionOverridesValue = {
     batch_size: 1,
@@ -88,7 +95,7 @@ export class SentimentAnalysisComponent implements AfterViewInit {
     this.isPipelineRunning = true;
     this.result = {};
 
-    if (!this.settingsComponent.isRunInWorker) {
+    if (!this.settingsComponent.settings.isRunInWorker) {
       const completion = await runPipeline(
         'sentiment-analysis',
         this.textSeedValue,
@@ -108,7 +115,7 @@ export class SentimentAnalysisComponent implements AfterViewInit {
         this.isPipelineRunning = false;
       };
       worker.postMessage({
-        pipeline: 'sentiment-analysis',
+        pipelineName: 'sentiment-analysis',
         input: this.textSeedValue,
         model: this.model,
         options: this.options,

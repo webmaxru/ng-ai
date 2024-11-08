@@ -5,7 +5,7 @@ import { ImageSegmentationComponent } from './image-segmentation/image-segmentat
 
 export const routes: Routes = [
   { path: '', component: SentimentAnalysisComponent },
-  { path: 'text-generation', component: TextGenerationComponent },
-  { path: 'sentiment-analysis', component: SentimentAnalysisComponent },
-  { path: 'image-segmentation', component: ImageSegmentationComponent },
+  { path: 'generation', component: TextGenerationComponent },
+  { path: 'analysis', component: SentimentAnalysisComponent },
+  { path: 'vision', component: ImageSegmentationComponent },
 ];

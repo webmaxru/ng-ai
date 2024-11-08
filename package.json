@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build-sw": "node workbox-build.js && npx rollup -c",
+    "build-pwa": "ng build && npm run build-sw"
   },
   "private": true,
   "dependencies": {
@@ -21,8 +23,13 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@huggingface/transformers": "^3.0.2",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.24.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "workbox-build": "^7.3.0",
     "zone.js": "~0.14.10"
   },
   "devDependencies": {

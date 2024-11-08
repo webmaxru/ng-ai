@@ -28,13 +28,9 @@
       <mat-form-field class="full-width">
         <mat-label>Model</mat-label>
         <mat-select [(ngModel)]="model">
-          <mat-option value="Xenova/bert-base-multilingual-uncased-sentiment"
-            >Xenova/bert-base-multilingual-uncased-sentiment</mat-option
-          >
-          <mat-option
-            value="Xenova/distilbert-base-uncased-finetuned-sst-2-english"
-            >Xenova/distilbert-base-uncased-finetuned-sst-2-english</mat-option
-          >
+          @for (model of models; track model) {
+          <mat-option [value]="model.value">{{ model.viewValue }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
@@ -74,16 +70,26 @@
 
     <div
       class="card-content-container"
-      *ngIf="!isPipelineRunning && result?.label"
+      *ngIf="!isPipelineRunning && result"
     >
-      <h3>
-        Label: {{ result?.label }}, Score:
-        {{ result?.score | number : "1.2-2" }}
-      </h3>
+      <ul>
+        @for (resultItem of result; track resultItem) {
+        <li>
+          Label:
+          <strong>{{ resultItem.label }}</strong
+          >, Score:
+          <strong>{{ resultItem.score | number : "1.2-2" }}</strong>
+        </li>
+        }
+      </ul>
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button (click)="run()" [disabled]="isPipelineRunning || !textSeedValue || !model">
+    <button
+      mat-stroked-button
+      (click)="run()"
+      [disabled]="isPipelineRunning || !textSeedValue || !model"
+    >
       Run
     </button>
   </mat-card-actions>

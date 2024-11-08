@@ -1,8 +1,9 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   Output,
   EventEmitter,
+  ChangeDetectorRef,
+  AfterViewInit,
 } from '@angular/core';
 
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -25,9 +26,8 @@ declare const MLGraphBuilder: any;
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
-  //changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent {
+export class SettingsComponent implements AfterViewInit {
   private _settings: any;
 
   @Output() settingsChange = new EventEmitter<any>();
@@ -50,14 +50,16 @@ export class SettingsComponent {
   isNPUEnabled: boolean = false;
   isFp16Enabled: boolean = false;
   isWorkerEnabled: boolean = false;
-  isRunInWorker: boolean = false;
+
+  ngAfterViewInit() {}
 
   ngOnInit(): void {
     this.settings = {
       api: 'webnn',
       webnnDevice: '',
       quantization: 'fp16',
-      isFreeDimensionOverrides: true,
+      isFreeDimensionOverrides: false,
+      isRunInWorker: false,
     };
 
     this.isWebNN().then((res) => {
@@ -72,10 +74,13 @@ export class SettingsComponent {
     this.isFp16().then((res) => {
       this.isFp16Enabled = res;
     });
+
     this.isWorker().then((res) => {
       this.isWorkerEnabled = res;
 
-      if (this.isWorkerEnabled) this.isRunInWorker = true;
+      if (this.isWorkerEnabled) {
+        this.settings.isRunInWorker = true;
+      }
     });
   }
 

@@ -27,8 +27,10 @@ export function showError(
 export function processCompletion(snackBar: MatSnackBar, completion: any) {
   if (!completion.error) {
     showSuccess(snackBar, `Completed in ${completion.duration} ms`);
-    return completion.result?.[0];
+    console.log(completion.result)
+    return completion.result;
   } else {
+    console.error(completion.error)
     showError(snackBar, completion.error);
     return null;
   }

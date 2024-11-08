@@ -1,0 +1,12 @@
+{
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": ["/images/*.{png,jpg,gif}", "/static/*"]
+  },
+  "globalHeaders": {
+    "X-Powered-By": "Maxim Salnikov and Azure Static Web Apps"
+  },
+  "mimeTypes": {
+    ".webmanifest": "text/json"
+  }
+}

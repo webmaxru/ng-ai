@@ -22,3 +22,8 @@ export type Provider =
   | 'webnn-npu'
   | 'webnn-gpu'
   | 'webnn-cpu';
+
+export interface Models {
+  value: string;
+  viewValue: string;
+}
