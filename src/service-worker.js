@@ -42,6 +42,11 @@ googleFontsCache({ cachePrefix: "wb7-gfonts" });
 
 imageCache({ cacheName: "wb7-content-images", maxEntries: 10 });
 
+// RUNTIME CACHING
+
+// Keeping wasm always fresh
+registerRoute(({ url }) => url.pathname.endsWith(".wasm"), new NetworkFirst());
+
 // APP SHELL UPDATE FLOW
 
 addEventListener("message", (event) => {
