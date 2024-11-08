@@ -7,16 +7,21 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
   >
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item href="/">Analysis</a>
-      <a mat-list-item href="/generation">Generation</a>
-      <a mat-list-item href="/vision">Vision</a>
-      <a mat-list-item href="https://github.com/webmaxru/ng-ai">Repo</a>
-      <a mat-list-item href="https://sessionize.com/maxim-salnikov/">Contact</a>
-    </mat-nav-list>
+    <div class="sidenav-menu">
+      <mat-toolbar>Menu</mat-toolbar>
 
-    <p><small>Made by Maxim Salnikov</small></p>
+      <mat-nav-list>
+        <a mat-list-item href="/">Analysis</a>
+        <a mat-list-item href="/generation">Generation</a>
+        <a mat-list-item href="/vision">Vision</a>
+        <a mat-list-item href="https://github.com/webmaxru/ng-ai">Repo</a>
+        <a mat-list-item href="https://sessionize.com/maxim-salnikov/"
+          >Contact</a
+        >
+      </mat-nav-list>
+
+      <p class="sidenav-footer"><small>Made in Norway by <a href="https://www.linkedin.com/in/webmax/">Maxim Salnikov</a></small></p>
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
@@ -32,10 +37,19 @@
       }
       <span>WebNN using Transformers.js</span>
       <span class="toolbar-spacer"></span>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Share page" >
+      <button
+        mat-icon-button
+        class="example-icon favorite-icon"
+        aria-label="Share page"
+      >
         <mat-icon>favorite</mat-icon>
       </button>
-      <button mat-icon-button class="example-icon" aria-label="Share page" (click)="sharePage()">
+      <button
+        mat-icon-button
+        class="example-icon"
+        aria-label="Share page"
+        (click)="sharePage()"
+      >
         <mat-icon>share</mat-icon>
       </button>
     </mat-toolbar>
