@@ -16,7 +16,7 @@ let workboxConfig = {
   ],
 
   swSrc: "src/service-worker.js",
-  swDest: "dist/ng-ai/sw.js",
+  swDest: "dist/ng-ai/browser/sw.js",
 
   // Angular takes care of cache busting for JS and CSS (in prod mode)
   dontCacheBustURLsMatching: new RegExp(".+.[a-f0-9]{20}.(?:js|css)"),
