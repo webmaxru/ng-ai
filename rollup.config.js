@@ -3,9 +3,9 @@ import replace from "@rollup/plugin-replace";
 import terser from "@rollup/plugin-terser";
 
 export default {
-  input: "dist/ng-ai/sw.js",
+  input: "dist/ng-ai/browser/sw.js",
   output: {
-    file: "dist/ng-ai/sw.js",
+    file: "dist/ng-ai/browser/sw.js",
     format: "cjs",
   },
   plugins: [
