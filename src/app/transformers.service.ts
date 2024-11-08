@@ -11,7 +11,7 @@ env.useBrowserCache = true;
 
 // Set location of .wasm files. Defaults to use a CDN.
 if (env.backends.onnx.wasm) {
-  env.backends.onnx.wasm.wasmPaths = '/wasm/'; // https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/
+ // env.backends.onnx.wasm.wasmPaths = '/wasm/'; // https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/
   // env.backends.onnx.wasm.wasmPaths = "../../assets/dist_transformers/dynamic-runs-1.20-dev/";
   // https://github.com/huggingface/transformers.js/blob/7a58d6e11968dd85dc87ce37b2ab37213165889a/src/backends/onnx.js#L187
   // https://github.com/microsoft/webnn-developer-preview/issues/46
