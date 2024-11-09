@@ -11,17 +11,45 @@
 
 <mat-card>
   <mat-card-content>
-    <div class="card-content-container logo">
+    <div class="card-content-container">
       Offline-ready, privacy-first application that leverages the most suitable
       hardware available on the edge to run AI workloads
     </div>
 
-    <p>Choose task:</p>
+    <div class="card-content-container">
+      Features:
+
+      <ul>
+        <li>Feature detection: WebGPU, WebNN, NPU</li>
+        <li>Running AI inference in the worker thread, off the main thread</li>
+        <li>Installable, offline-ready PWA</li>
+        <li>
+          Multiple usecases: image classification, sentiment analysis, and more
+        </li>
+      </ul>
+    </div>
+
+    <div class="card-content-container">
+      Technologies used:
+
+      <ul>
+        <li>Angular 18 + Angular Material 3</li>
+        <li>
+          Workbox: offline-readiness, precaching, runtime caching, smart update
+          flow
+        </li>
+        <li>
+          Transformers.js: AI pipelines, models caching. Using ONNX Web Runtime
+          and WebNN, WebGPU under the hood
+        </li>
+      </ul>
+    </div>
+
+    <p>Start with choosing your task:</p>
 
     <mat-nav-list>
-        <a mat-list-item href="/">Analysis</a>
-        <a mat-list-item href="/vision">Vision</a>
-      </mat-nav-list>
-
+      <a mat-list-item href="/analysis" class="nav-list-item">Analysis</a>
+      <a mat-list-item href="/vision" class="nav-list-item">Vision</a>
+    </mat-nav-list>
   </mat-card-content>
 </mat-card>

@@ -9,3 +9,8 @@ a {
 .logo {
   text-align: center;
 }
+
+.nav-list-item {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 0.5rem;
+}
