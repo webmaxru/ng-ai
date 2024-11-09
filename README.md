@@ -1,6 +1,21 @@
-# NgAi
+# Angular AI: WebNN using Transformers.js
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
+Offline-ready, privacy-first application that leverages the most suitable hardware available on the edge to run AI workloads.
+
+![Logo](https://github.com/webmaxru/ng-ai/raw/main/public/icons/icon-512x512.png)
+
+## Features
+
+- Feature detection: WebGPU, WebNN, NPU
+- Running AI inference in the worker thread, off the main thread
+- Installable, offline-ready PWA
+- Multiple use cases: image classification, sentiment analysis, and more
+
+## Technologies used
+
+- Angular 18 + Angular Material 3
+- Workbox: offline-readiness, precaching, runtime caching, smart update flow
+- Transformers.js: AI pipelines, models caching. Using ONNX Web Runtime and WebNN, WebGPU under the hood
 
 ## Development server
 
